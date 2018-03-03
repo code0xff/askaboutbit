@@ -1,0 +1,20 @@
+{
+  "name": "askaboutbit",
+  "version": "1.0.0",
+  "description": "Ask about bit",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "modules": "^0.4.0",
+    "node-telegram-bot-api": "^0.30.0",
+    "pg": "^7.4.1",
+    "request": "^2.83.0",
+    "sync-request": "^5.0.0"
+  }
+}
