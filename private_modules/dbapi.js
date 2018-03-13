@@ -3,7 +3,7 @@ const dbinfo = require('./dbinfo.js');
 
 const config = dbinfo.getDBInfo();
 
-exports.startHotkey = function (userKey) {
+exports.startHotkey = (userKey) => {
     const client = new pg.Client(config);
 
     client.connect();
@@ -20,7 +20,7 @@ exports.startHotkey = function (userKey) {
         .catch(err => console.log(err));
 };
 
-exports.setHotkey = function (hotkeyNumber, userKey, menu) {
+exports.setHotkey = (hotkeyNumber, userKey, menu) => {
     const client = new pg.Client(config);
 
     client.connect();
@@ -35,7 +35,7 @@ exports.setHotkey = function (hotkeyNumber, userKey, menu) {
         .catch(err => console.log(err));
 };
 
-exports.getHotkeyMenu = function (hotkeyNumber, userKey) {
+exports.getHotkeyMenu = (hotkeyNumber, userKey) => {
     return new Promise((resolve, reject) => {
         const client = new pg.Client(config);
         let menu = "";
@@ -61,7 +61,7 @@ exports.getHotkeyMenu = function (hotkeyNumber, userKey) {
     });
 };
 
-exports.getHotkeyMenuList = function (userKey) {
+exports.getHotkeyMenuList = (userKey) => {
     return new Promise((resolve, reject) => {
         const client = new pg.Client(config);
         let menulist = "";
@@ -88,7 +88,7 @@ exports.getHotkeyMenuList = function (userKey) {
     });
 };
 
-exports.checkHotkey = function (userKey) {
+exports.checkHotkey = (userKey) => {
     return new Promise((resolve, reject) => {
         const client = new pg.Client(config);
 
@@ -110,4 +110,19 @@ exports.checkHotkey = function (userKey) {
                 console.log(err);
             });
     });
+};
+
+exports.setAlarm = (userKey, exchange, coin, price, email) => {
+    const client = new pg.Client(config);
+
+    client.connect();
+    let sql = "INSERT INTO ALARM_INFO VALUES (to_char(current_timestamp, 'YYYYMMDDHH12MISS')||'_'||'" + userKey + "', '" + userKey + "', '" + exchange + "', '" + coin + "', " + price + ", '" + email + "', CURRENT_TIMESTAMP, 'N', CURRENT_TIMESTAMP);";
+
+    client
+        .query(sql)
+        .then(() => {
+            console.log('Data created successfully!');
+            client.end(console.log('Closed client connection'));
+        })
+        .catch(err => console.log(err));
 };

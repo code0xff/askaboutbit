@@ -9,7 +9,8 @@ const dd = require('./private_modules/dd.js');
 let e_exchanges = ['bithumb', 'coinnest', 'coinrail', 'korbit', 'upbit', 'coinone'];
 let k_exchanges = ['빗썸', '코인네스트', '코인레일', '코빗', '업비트', '코인원'];
 let e_coins = ['btc', 'eth', 'xrp', 'bch', 'qtum', 'btg', 'eos', 'tron', 'etc', 'ada', 'neo'];
-let k_coins = ['비트코인', '이더리움', '리플', '비트코인캐시', '퀀텀', '비트코인골드', '이오스', '트론', '이더리움클래식', '에이다', '네오'];
+let k_coins = ['비트코인', '이더리움', '리플', '비트코인캐시', '퀀텀', '비트코인골드',
+'이오스', '트론', '이더리움클래식', '에이다', '네오'];
 
 app.use(bodyParser.json());
 
@@ -95,6 +96,19 @@ function getMessage (content, user_key) {
                 }
             })
             .catch(err => console.log(err));
+        } else if (content.indexOf('알림등록') !== -1) {
+            let input = content.split(' ');
+            if (input.length < 5) {
+                resolve(dd.getDD("alarm_fail"));
+            } else {
+                let exchange = input[1];
+                let coin = input[2];
+                let price = input[3];
+                let email = input[4];
+
+                dbapi.setAlarm(user_key, exchange, coin, price, email);
+                resolve(dd.getDD("alarm_register_success").replace("$1", email));
+            }
         } else if (parseInt(content)) {
             let hotkey = parseInt(content);
 
