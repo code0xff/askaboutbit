@@ -8,7 +8,7 @@ exports.getDD = (param) => {
         "hello": "안녕하세요. Askaboutbit은 가상화폐 정보 제공을 위한 챗봇입니다.\n"+
             "help 혹은 도움을 입력하시면 이용하실 수 있는 메뉴가 제공됩니다.",
 
-        "help": "bithumb, coinnest, coinrail, korbit, upbit, coinone 여섯 거래소의 시세가 제공되며,\n" +
+        "help": "bithumb, coinrail, korbit, upbit, coinone 다섯 거래소의 시세가 제공되며,\n" +
         "비트코인, 이더리움, 리플, 비트코인캐시, 퀀텀, 비트코인골드, 이오스, 트론, 이더리움클래식, 에이다, 네오 등 11가지 코인의 각 거래소별 시세를 확인하실 수 있습니다.\n\n" +
         "기능을 사용하시려면 거래소명이나 코인명을 한글 또는 영문코드로 입력해주세요.\n" +
         "(영문은 대소문자 구분없이 사용이 가능합니다.)\n" +

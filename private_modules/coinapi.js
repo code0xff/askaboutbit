@@ -4,8 +4,6 @@ exports.gethomeurl = (exchange) => {
     switch(exchange) {
         case "bithumb":
             return "https://www.bithumb.com";
-        case "coinnest":
-            return "https://www.coinnest.co.kr";
         case "coinrail":
             return "https://www.coinrail.com";
         case "korbit":
@@ -25,8 +23,6 @@ exports.getprice = (exchange, obj) => {
     switch(exchange) {
         case "bithumb":
             return obj.data.closing_price;
-        case "coinnest":
-            return obj.last;
         case "coinrail":
             return obj.last_price;
         case "korbit":
@@ -44,10 +40,9 @@ exports.priceWithCommas = (price) => {
 
 exports.getCoinlist = (exchange) => {
     let coin = {"bithumb": ['btc', 'eth', 'etc', 'xrp', 'bch', 'qtum', 'btg', 'eos'],
-                "coinnest": ['btc', 'bch', 'eth', 'tron', 'neo', 'qtum', 'etc', 'btg'],
                 "coinrail": ['btc', 'eth', 'eos', 'xrp', 'qtum', 'bch'],
                 "korbit": ['btc', 'eth', 'etc', 'xrp', 'bch', 'btg'],
-                "upbit": ['btc', 'etc', 'ada', 'xrp', 'eth', 'qtum', 'bcc', 'btg'],
+                "upbit": ['btc', 'etc', 'ada', 'xrp', 'eth', 'qtum', 'bcc', 'btg', 'trx'],
                 "coinone": ['btc', 'bch', 'eth', 'etc', 'xrp', 'qtum', 'btg']
                 };
     return coin[exchange];
@@ -73,8 +68,6 @@ function getapi (exchange) {
     switch(exchange) {
         case "bithumb":
             return "https://api.bithumb.com/public/ticker/";
-        case "coinnest":
-            return "https://api.coinnest.co.kr/api/pub/ticker?coin=";
         case "coinrail":
             return "https://api.coinrail.co.kr/public/last/order?currency=";
         case "korbit":
