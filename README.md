@@ -1,5 +1,5 @@
 # Askaboutbit
-## Introduce
+## Intro
 . Askaboutbit is kakao-plus-friend-bot for getting information about Cryptocurrency
 
 ## How to use
