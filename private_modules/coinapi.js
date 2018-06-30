@@ -1,5 +1,3 @@
-const request = require('sync-request');
-
 exports.gethomeurl = (exchange) => {
     switch(exchange) {
         case "bithumb":
@@ -42,7 +40,7 @@ exports.getCoinlist = (exchange) => {
     let coin = {"bithumb": ['btc', 'eth', 'etc', 'xrp', 'bch', 'qtum', 'btg', 'eos'],
                 "coinrail": ['btc', 'eth', 'eos', 'xrp', 'qtum', 'bch'],
                 "korbit": ['btc', 'eth', 'etc', 'xrp', 'bch', 'btg'],
-                "upbit": ['btc', 'etc', 'ada', 'xrp', 'eth', 'qtum', 'bcc', 'btg', 'trx'],
+                "upbit": ['btc', 'etc', 'ada', 'xrp', 'eth', 'qtum', 'bch', 'btg', 'trx'],
                 "coinone": ['btc', 'bch', 'eth', 'etc', 'xrp', 'qtum', 'btg']
                 };
     return coin[exchange];

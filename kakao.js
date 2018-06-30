@@ -3,7 +3,7 @@ const request = require('sync-request');
 const app = express();
 const bodyParser = require('body-parser');
 const coinapi = require('./private_modules/coinapi.js');
-const dbapi = require('./private_modules/dbapi.js');
+const qf4n = require('./private_modules/queryfactory-for-node')
 const dd = require('./private_modules/dd.js');
 
 let e_exchanges = ['bithumb', 'coinrail', 'korbit', 'upbit', 'coinone'];
@@ -13,6 +13,7 @@ let k_coins = ['비트코인', '이더리움', '리플', '비트코인캐시', '
 '이오스', '트론', '이더리움클래식', '에이다', '네오'];
 
 app.use(bodyParser.json());
+qf4n.createQueryFactory(__dirname, '/resources/config');
 
 app.get('/keyboard', function(req, res) {
     let keyboard = {
@@ -55,24 +56,46 @@ function getMessage (content, user_key) {
     content = content.toLowerCase();
 
     return new Promise((resolve, reject) => {
-        if(content.indexOf('안녕') !== -1 || content.indexOf('hello') !== -1 || content.indexOf('hi') !== -1) {
+        if(content.indexOf('안녕') !== -1 || content.indexOf('hello') !== -1) {
             resolve(dd.getDD("hello"));
         } else if(content.indexOf('도움') !== -1 || content.indexOf('help') !== -1) {
             resolve(dd.getDD("help"));
         } else if(content.indexOf('핫키시작') !== -1) {
-            dbapi.checkHotkey(user_key)
+            const param = {
+                "userKey": user_key
+            }
+            qf4n.select("checkHotkey", param)
             .then(data => {
-                let checkSum = parseInt(data);
+                let checkSum = parseInt(data[0].check_sum);
                 if(checkSum === 0) {
-                    dbapi.startHotkey(user_key);
-                    resolve(dd.getDD("hotkey_start_success"));
+                    for (let i = 1; i <= 5; i++) {
+                        let param = {
+                            hotkeyNumber: i,
+                            userKey: user_key
+                        }
+                        qf4n.insert('startHotkey', param)
+                        .then((result)=> {
+                            if ( i == 5) {
+                                resolve(dd.getDD("hotkey_start_success"));
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            resolve(dd.getDD("hotkey_start_fail"));
+                        })
+                    }
                 } else {
                     resolve(dd.getDD("hotkey_start_fail"));
                 }
             })
-            .catch(err => console.log(err));
+            .catch((err) => {
+                console.log(err)
+            });
         } else if(content.indexOf('핫키등록') !== -1) {
-            dbapi.checkHotkey(user_key)
+            const param = {
+                "userKey": user_key
+            }
+            qf4n.select("checkHotkey", param)
             .then(data => {
                 let checkSum = parseInt(data);
                 if(checkSum === 0) {
@@ -88,8 +111,19 @@ function getMessage (content, user_key) {
                         if (hotkeyNumber <= 0 || hotkeyNumber > 5) {
                             resolve(dd.getDD("hotkey_register_fail3"));
                         }
-                        dbapi.setHotkey(hotkeyNumber, user_key, menu);
-                        resolve(hotkeyNumber + "번 핫키에 " + menu + " 등록되었습니다.");
+                        const param = {
+                            menu: menu,
+                            hotkeyNumber: hotkeyNumber,
+                            userKey: user_key
+                        }
+                        qf4n.update('setHotkey', param)
+                        .then((result) =>{
+                            resolve(hotkeyNumber + "번 핫키에 " + menu + " 등록되었습니다.");
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            resolve(dd.getDD("hotkey_register_fail4"));
+                        })
                     } else {
                         resolve(dd.getDD("hotkey_register_fail4"));
                     }
@@ -106,33 +140,62 @@ function getMessage (content, user_key) {
                 let price = input[3];
                 let email = input[4];
 
-                dbapi.setAlarm(user_key, exchange, coin, price, email);
-                resolve(dd.getDD("alarm_register_success").replace("$1", email));
+                const param = {
+                    userKey: user_key, 
+                    exchange: exchange, 
+                    coin: coin, 
+                    price: price, 
+                    email: email
+                }
+
+                qf4n.insert('setAlarm', param)
+                .then((result) => {
+                    resolve(dd.getDD("alarm_register_success").replace("$1", email));
+                }) 
+                .catch((error) => {
+                    console.log(error);
+                });
             }
         } else if (parseInt(content)) {
             let hotkey = parseInt(content);
 
             if (hotkey === 9) {
-                dbapi.getHotkeyMenuList(user_key)
-                .then(data => resolve(data + dd.getDD("hotkey_call_all")));
+                const param = {
+                    userKey: user_key
+                }
+                qf4n.select('getHotkeyMenuList', param)
+                .then((data) => {
+                    let result = '';
+                    data.map((object) => {
+                        result += ("hotkey" + object.hotkey_number + ": " + object.menu + "\n");
+                    });
+                    resolve(result + dd.getDD("hotkey_call_all"))
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             } else if (hotkey <= 0 || hotkey > 5) {
                 resolve(dd.getDD("hotkey_call_fail1"));
             } else {
-                dbapi.getHotkeyMenu(hotkey, user_key)
+                const param = {
+                    hotkeyNumber: hotkey,
+                    userKey: user_key
+                }
+                qf4n.select('getHotkeyMenu', param) 
                     .then((data) => {
-                    content = data;
-                    for (let i = 0; i < e_exchanges.length; i++) {
-                        if(content.indexOf(e_exchanges[i]) !== -1 || content.indexOf(k_exchanges[i]) !== -1) {
-                            resolve(getExchangeInfo(e_exchanges[i], coinapi.getCoinlist(e_exchanges[i])));
+                        content = data[0].menu;
+                        for (let i = 0; i < e_exchanges.length; i++) {
+                            if(content.indexOf(e_exchanges[i]) !== -1 || content.indexOf(k_exchanges[i]) !== -1) {
+                                resolve(getExchangeInfo(e_exchanges[i], coinapi.getCoinlist(e_exchanges[i])));
+                            }
                         }
-                    }
-                    for (let i = 0; i < e_coins.length; i++) {
-                        if(content.indexOf(e_coins[i]) !== -1 || content.indexOf(k_coins[i]) !== -1) {
-                            resolve(getCoinInfo(e_exchanges, e_coins[i]));
+                        for (let i = 0; i < e_coins.length; i++) {
+                            if(content.indexOf(e_coins[i]) !== -1 || content.indexOf(k_coins[i]) !== -1) {
+                                resolve(getCoinInfo(e_exchanges, e_coins[i]));
+                            }
                         }
-                    }
 
-                    resolve(dd.getDD("hotkey_call_fail2").replace("$1", hotkey));
+                        resolve(dd.getDD("hotkey_call_fail2").replace("$1", hotkey));
                 }).catch(err => {
                     console.log(err);
                     resolve(dd.getDD("network_error"));

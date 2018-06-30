@@ -1,0 +1,17 @@
+{
+    "mapper": {
+        "insert": {
+            "insertTest": "INSERT INTO HOTKEY_INFO VALUES (#{hotkeyNumber}, #{userKey}, '',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
+            "setAlarm": "INSERT INTO ALARM_INFO VALUES (to_char(current_timestamp, 'YYYYMMDDHH12MISS')||'_'||#{userKey}, #{userKey}, #{exchange}, #{coin}, #{price}, #{email}, CURRENT_TIMESTAMP, 'N', CURRENT_TIMESTAMP)",
+            "startHotkey": "INSERT INTO HOTKEY_INFO VALUES (#{hotkeyNumber}, #{userKey}, '',  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"
+        },
+        "select": {
+            "checkHotkey": "SELECT COUNT(*) AS check_sum FROM HOTKEY_INFO WHERE USER_KEY = #{userKey}",
+            "getHotkeyMenuList": "SELECT HOTKEY_NUMBER, MENU FROM HOTKEY_INFO WHERE USER_KEY = #{userKey} ORDER BY HOTKEY_NUMBER",
+            "getHotkeyMenu": "SELECT MENU FROM HOTKEY_INFO WHERE HOTKEY_NUMBER = #{hotkeyNumber} AND USER_KEY = #{userKey}"
+        },
+        "update" : {
+            "setHotkey": "UPDATE HOTKEY_INFO SET MENU = #{menu}, UPDATE_DATE = CURRENT_TIMESTAMP WHERE HOTKEY_NUMBER = #{hotkeyNumber} AND USER_KEY = #{userKey}"
+        }
+    }
+}
