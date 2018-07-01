@@ -6,8 +6,8 @@ const coinapi = require('./private_modules/coinapi.js');
 const qf4n = require('./private_modules/queryfactory-for-node')
 const dd = require('./private_modules/dd.js');
 
-let e_exchanges = ['bithumb', 'coinrail', 'korbit', 'upbit', 'coinone'];
-let k_exchanges = ['빗썸', '코인레일', '코빗', '업비트', '코인원'];
+let e_exchanges = ['bithumb', 'korbit', 'upbit', 'coinone'];
+let k_exchanges = ['빗썸', '코빗', '업비트', '코인원'];
 let e_coins = ['btc', 'eth', 'xrp', 'bch', 'qtum', 'btg', 'eos', 'trx', 'etc', 'ada', 'neo'];
 let k_coins = ['비트코인', '이더리움', '리플', '비트코인캐시', '퀀텀', '비트코인골드',
 '이오스', '트론', '이더리움클래식', '에이다', '네오'];
@@ -184,6 +184,7 @@ function getMessage (content, user_key) {
                 qf4n.select('getHotkeyMenu', param) 
                     .then((data) => {
                         content = data[0].menu;
+                        console.log(content);
                         for (let i = 0; i < e_exchanges.length; i++) {
                             if(content.indexOf(e_exchanges[i]) !== -1 || content.indexOf(k_exchanges[i]) !== -1) {
                                 resolve(getExchangeInfo(e_exchanges[i], coinapi.getCoinlist(e_exchanges[i])));

@@ -2,8 +2,6 @@ exports.gethomeurl = (exchange) => {
     switch(exchange) {
         case "bithumb":
             return "https://www.bithumb.com";
-        case "coinrail":
-            return "https://www.coinrail.com";
         case "korbit":
             return "https://www.korbit.co.kr";
         case "upbit":
@@ -21,8 +19,6 @@ exports.getprice = (exchange, obj) => {
     switch(exchange) {
         case "bithumb":
             return obj.data.closing_price;
-        case "coinrail":
-            return obj.last_price;
         case "korbit":
             return obj.last;
         case "upbit":
@@ -37,12 +33,12 @@ exports.priceWithCommas = (price) => {
 };
 
 exports.getCoinlist = (exchange) => {
-    let coin = {"bithumb": ['btc', 'eth', 'etc', 'xrp', 'bch', 'qtum', 'btg', 'eos'],
-                "coinrail": ['btc', 'eth', 'eos', 'xrp', 'qtum', 'bch'],
-                "korbit": ['btc', 'eth', 'etc', 'xrp', 'bch', 'btg'],
-                "upbit": ['btc', 'etc', 'ada', 'xrp', 'eth', 'qtum', 'bch', 'btg', 'trx'],
-                "coinone": ['btc', 'bch', 'eth', 'etc', 'xrp', 'qtum', 'btg']
-                };
+    let coin = {
+        "bithumb": ['btc', 'eth', 'etc', 'xrp', 'bch', 'qtum', 'btg', 'eos'],
+        "korbit": ['btc', 'eth', 'etc', 'xrp', 'bch', 'btg'],
+        "upbit": ['btc', 'etc', 'ada', 'xrp', 'eth', 'qtum', 'bch', 'btg', 'trx'],
+        "coinone": ['btc', 'bch', 'eth', 'etc', 'xrp', 'qtum', 'btg']
+        };
     return coin[exchange];
 };
 
@@ -51,8 +47,6 @@ function makeurl (exchange, currency) {
     // coinrail: btc-krw
     // korbit: btc_krw
     switch (exchange) {
-        case "coinrail":
-            return url + "-krw";
         case "korbit":
             return url + "_krw";
         case "coinone":
@@ -66,8 +60,6 @@ function getapi (exchange) {
     switch(exchange) {
         case "bithumb":
             return "https://api.bithumb.com/public/ticker/";
-        case "coinrail":
-            return "https://api.coinrail.co.kr/public/last/order?currency=";
         case "korbit":
             return "https://api.korbit.co.kr/v1/ticker?currency_pair=";
         case "upbit":
