@@ -1,4 +1,5 @@
 {   
+    "database": "postgresql",
     "connection": {
         "host" : "localhost",
         "port" : "5432",
