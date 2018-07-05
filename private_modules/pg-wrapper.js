@@ -36,18 +36,18 @@ exports.select = (sql, param) => {
 }
 
 const insertParam = (sql, param) => {
-    if (!param) return sql;
-
-    const keys = Object.keys(param);
     let values = [];
-    for (let i = 1; i <= keys.length; i++) {
-        let key = keys[i - 1];
-        sql = sql.replace(':' + key, ('$' + i));
-        values.push(param[key]);
+    if (param) {
+        const keys = Object.keys(param);
+    
+        for (let i = 1; i <= keys.length; i++) {
+            let key = keys[i - 1];
+            sql = sql.replace(new RegExp(':' + key, 'g'), ('$' + i));
+            values.push(param[key]);
+        }
     }
-    const data = {
+    return {
         sql,
         values
-    }
-    return data;
+    };
 }
